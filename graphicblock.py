@@ -1,8 +1,9 @@
 
 import math
-from pil import Image
-from pil import ImageOps
-from pil import ImageDraw
+try:
+    from PIL import Image, ImageOps, ImageDraw
+except:
+    from pil import Image, ImageOps, ImageDraw
 from imageblock import ImageBlock
 import os
 

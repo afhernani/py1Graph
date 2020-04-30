@@ -1,6 +1,9 @@
 #  ! /usr/bin/env python3
 # _*_ coding:UTF-8 _*_
-from pil import Image, ImageSequence, ImageDraw
+try:
+    from PIL import Image, ImageSequence, ImageDraw
+except:
+    from pil import Image, ImageSequence, ImageDraw
 import os
 
 class ImageBlock():

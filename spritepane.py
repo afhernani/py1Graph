@@ -2,7 +2,10 @@
 # _*_ coding:UTF-8 _*_
 import tkinter as tk
 from tkinter import filedialog
-from pil import Image, ImageTk #, ImageSequence
+try:
+    from PIL import Image, ImageTk #, ImageSequence
+except:
+    from pil import Image, ImageTk #, ImageSequence
 import os
 from threading import Thread
 from graphicblock import Graphics
