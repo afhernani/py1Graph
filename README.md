@@ -11,7 +11,7 @@
 ### engine() to  scale and ajust to frame
 
 # spritepane.py --- SpritePane().
-## Object SpritePane with funcionality UGI tkinter, and it can use to show imgae on window tk.
+## Object SpritePane with funcionality UGI tkinter, and it can use to show imge on window tk.
 ### Version: 1.2 -- modification including canvas and image in canva.
 
 # App.
