@@ -1,4 +1,4 @@
-#  ! /usr/bin/env python3
+#!/usr/bin/env python3
 # _*_ coding:UTF-8 _*_
 try:
     from PIL import Image, ImageSequence, ImageDraw
@@ -43,6 +43,10 @@ class ImageBlock():
          '''
         function = self.eCalls.get(key, lambda: 'invalid event')
         function(*args)
+
+    def reset(self, *args):
+        self.index, self.count, self.error = 0, 0, None
+        self.frames.clear()
 
     def getImagenSecuencia(self, index)->Image:
         ''' devuelve la imagen del index indicado 
@@ -181,7 +185,6 @@ class ImageBlock():
         self.count += 1
         self.index = self.count -1
 
-
     def analizeWEBP(self, argument):
         '''por ahora no hace nada, TODO: tendremos en cuenta si es no animacion'''
         # self.frames.append((argument, -1))
@@ -221,6 +224,30 @@ class ImageBlock():
         # im.save('x.png')
         # os.startfile('x.png')
         return im
+
+    @staticmethod
+    def whichWH(imgs=[])-> tuple:
+        ''' get (w, h) maxima from a group of images
+            parameters:
+                imgs=[] : list of images
+            return
+                tuple size = w,h : maximum or 0, 0 it is not posible
+        '''
+        import types
+        z = 0, 0
+        if len(imgs) >= 1:
+            try:
+                if isinstance(imgs[0].size, tuple):
+                    w, h = 0, 0
+                    for itm in imgs:
+                        if w < itm.size[0]:
+                            w = itm.size[0]
+                        if h < itm.size[1]:
+                            h = itm.size[1]
+                    z = w, h
+            except AttributeError as e:
+                print(str(e.args))
+        return z
 
 
 if __name__ == '__main__':
