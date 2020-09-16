@@ -183,6 +183,34 @@ class Graphics():
         print('devuelve:', r, p)
         return (r, p)
 
+    def reset(self, *args):
+        if self.imgBox:
+            self.imgBox.reset()
+
+    def savetofile(self, source=None):
+        '''create gif file from frames
+            parameter:
+                source: str name file to save
+        '''
+        source = 'unknow.gif' if source is None else source
+        imgs = []
+        self.transform = False
+        for indx in range(self.imgBox.count):
+            img = self.getImagenSecuencia(indx)
+            imgs.append(img)
+        # obtenemos todas las imagenes
+        self.width, self.height = ImageBlock.whichWH(imgs=imgs)
+        self.transform = True
+        imgs.clear()
+        for indx in range(self.imgBox.count):
+            img = self.getImagenSecuencia(indx)
+            imgs.append(img)
+        imgs[0].save(source,
+               save_all=True,
+               append_images=imgs[1:],
+               duration=1000,
+               loop=0)
+
 
 if __name__ == '__main__':
     '''
