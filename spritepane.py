@@ -1,4 +1,4 @@
-# !/usr/bin/env python3
+#!/usr/bin/env python3
 # _*_ coding:UTF-8 _*_
 import tkinter as tk
 from tkinter import filedialog
@@ -19,6 +19,7 @@ class SpritePane(tk.Frame):
         tk.Frame.__init__(self, parent, **kvargs)
         parent.bind('<G>', self.file_save)
         parent.bind('<A>', self.define_transform)
+        parent.bind('<R>', self.reset)
         parent.bind('<Key>', self.key)
         self.fileImagen= fileImagen
         if not fileImagen:
@@ -85,10 +86,10 @@ class SpritePane(tk.Frame):
             self.m_photo = ImageTk.PhotoImage(self.m_img)
             print(self.m_img.mode, self.m_photo)
             self.canvas.itemconfig(self.c_img, image=self.m_photo)
-            
-            self.after(self.timer, lambda: self.animate((counter+1)% self.m_graphics.imgBox.count))
+            if self.m_graphics.imgBox.count > 0:
+                self.after(self.timer, lambda: self.animate((counter+1)% self.m_graphics.imgBox.count))
         except Exception as e:
-            print('animate exception:', e.args)
+            print('animate exception:', str(e.args))
 
     def enter(self, event):
         self.animating = True
@@ -145,14 +146,13 @@ class SpritePane(tk.Frame):
         options['title'] = title
         if asFile:
             # referencia al fichero abierto
-            file = filedialog.asksaveasfile(mode='wb+', **options)
+            file_n = filedialog.asksaveasfile(mode='wb+', **options)
         else:
             # return la cadena de referencia del fichero - aun no creado
-            file = filedialog.asksaveasfilename(**options)
-        print('file -> ', file)
-        return file
-        # TODO: aqui a�adimos lo que queremos hacer
-
+            file_n = filedialog.asksaveasfilename(**options)
+        print('file -> ', file_n)
+        self.m_graphics.savetofile(file_n)
+    
     def key(self, event):
         print('1. pressed:', repr(event.char))
         print('2. pressed:', event.char )
@@ -163,6 +163,10 @@ class SpritePane(tk.Frame):
             return
         os.system(args)
 
+    def reset(self, *args):
+        if self.m_graphics:
+            self.m_graphics.reset()
+        self.index = 0
 
 def main():
     root = tk.Tk()
