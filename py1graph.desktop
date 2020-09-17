@@ -1,0 +1,11 @@
+[Desktop Entry]
+Type=Application
+Name=py1graph
+GenericName=graphview
+Path=/media/hernani/WDatos/Share/afhernani.com/py1graph/
+Exec=python3 spritepane.py
+Icon=/media/hernani/WDatos/Share/afhernani.com/py1graph/image/pirate-10.png
+NoDisplay=false
+Terminal=false
+Categories=Utility;FileTools;
+StartupNotify=true
