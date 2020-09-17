@@ -1,4 +1,5 @@
-
+#!/usr/bin/env python3
+# _*_ coding:UTF-8 _*_
 import math
 try:
     from PIL import Image, ImageOps, ImageDraw
