@@ -21,12 +21,8 @@ class SpritePane(tk.Frame):
         parent.bind('<A>', self.define_transform)
         parent.bind('<R>', self.reset)
         parent.bind('<Key>', self.key)
-        self.fileImagen= fileImagen
-        if not fileImagen:
-            self.fileImagen = './Image/sprite.gif'
-        self.timer = timer
-        if not timer:
-            self.timer = 850
+        self.fileImagen= '' if fileImagen is None else fileImagen
+        self.timer = 850 if timer is None else timer
         self.pathfile = tk.StringVar(value=self.fileImagen)
         self.transform = tk.BooleanVar(value=False)
         self.transform.trace('r', self.trace_transform )
