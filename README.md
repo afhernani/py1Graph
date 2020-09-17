@@ -17,6 +17,10 @@
 # App.
 ## lunch: python spritepane.py.
 ### show a little app with some functonality in ttk GUI
+## options:
+   - A (shift + a) : rescale the canvas containing the image to the original dimensions of the image.
+   - R (shift + r): reset all imagens, erase all imagens uploads
+   - G (shift + g): save to gif file.
 
 # Required for APP:
 ## biblioteca: pillow, tkinter, imageblock and gaphics
