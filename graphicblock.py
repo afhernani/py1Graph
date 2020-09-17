@@ -125,13 +125,13 @@ class Graphics():
             
         if size == img.size:
             return img
-        #tamiz = Image.new('RGB', size, (255, 255, 255))
-        print('size:', size, '\norignal mode:', img.mode, '\ninfo:', img.info)
+        tamiz = Image.new('RGBA', size, (0, 0, 0, 255)) # transparente
+        # print('size:', size, '\norignal mode:', img.mode, '\ninfo:', img.info)
         r, p = self.getScale(size, img.size)
         img_new = ImageOps.scale(img, r, 3)
-        return img_new
-        # tamiz.paste(img_new, p)
-        # return tamiz
+        # return img_new
+        tamiz.paste(img_new, p)
+        return tamiz
 
     '''
     fill_color = ''  # your background
