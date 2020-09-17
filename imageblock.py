@@ -18,8 +18,9 @@ class ImageBlock():
         try:
             self.fromFile(path=pathfile, largs=largs)
             # set imagen default 1/2
-            i = int(self.index/2)
-            self.getImagenSecuencia(i)
+            if self.count >=1:
+                i = int(self.index/2)
+                self.getImagenSecuencia(i)
         except Exception as e:
             self.error = e.args
             print('excepcion init process class', self.__class__.__name__)

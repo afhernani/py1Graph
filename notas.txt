@@ -1,0 +1,3 @@
+new options to develop in the application:
+1. add help keys to see possible keyboard actions
+2. function to save all the images in a gif or tiff block.
