@@ -152,6 +152,22 @@ class SpritePane(tk.Frame):
     def key(self, event):
         print('1. pressed:', repr(event.char))
         print('2. pressed:', event.char )
+        if event.char == 'i':
+            #master = tk.Tk()
+            #master.title("Information")
+            #master.geometry("400x400")
+            from tkinter import messagebox
+            texto = '''options: 
+    - Click over picture area to load image
+    - A (shift + a) : rescale the canvas containing the image to the original dimensions of the image.
+    - R (shift + r): reset all imagens, erase all imagens uploads
+    - G (shift + g): save to gif file.'''
+            messagebox.showinfo(title="Information", message=texto)
+            #msg = tk.Message(master, text=texto)
+            #msg.config(bg='lightgreen', font=('times', 12, 'italic'))
+            #msg.pack()
+            #master.mainloop()
+            #tk.mainloop()
 
     @staticmethod
     def tarea(args=None):
@@ -166,6 +182,7 @@ class SpritePane(tk.Frame):
 
 def main():
     root = tk.Tk()
+    root.title("py1graph; push 'i' for information.")
     root.geometry("400x600")
     app = SpritePane(root) #, fileImagen='./../work/thumbails/cotton.gif', timer=200)
     app.pack()
