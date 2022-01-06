@@ -150,13 +150,13 @@ class SpritePane(tk.Frame):
         self.m_graphics.savetofile(file_n)
     
     def key(self, event):
+        from tkinter import messagebox
         print('1. pressed:', repr(event.char))
         print('2. pressed:', event.char )
         if event.char == 'i':
             #master = tk.Tk()
             #master.title("Information")
             #master.geometry("400x400")
-            from tkinter import messagebox
             texto = '''options: 
     - Click over picture area to load image
     - A (shift + a) : rescale the canvas containing the image to the original dimensions of the image.
@@ -168,6 +168,9 @@ class SpritePane(tk.Frame):
             #msg.pack()
             #master.mainloop()
             #tk.mainloop()
+        if event.char == 'x':
+            messagebox.showinfo(title="Ajuste de ventana", message="pendiente ...")
+            
 
     @staticmethod
     def tarea(args=None):
