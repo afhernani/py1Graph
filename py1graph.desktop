@@ -2,9 +2,9 @@
 Type=Application
 Name=py1graph
 GenericName=graphview
-Path=/media/hernani/WDatos/Share/afhernani.com/py1graph/
+Path=/home/hernani/Documentos/Documentos/python/github.com/py1Graph
 Exec=python3 spritepane.py
-Icon=/media/hernani/WDatos/Share/afhernani.com/py1graph/Image/x.png
+Icon=/home/hernani/Documentos/Documentos/python/github.com/py1Graph/Image/x.png
 NoDisplay=false
 Terminal=false
 Categories=Utility;FileTools;
