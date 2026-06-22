@@ -6,7 +6,10 @@ try:
 except:
     from pil import Image, ImageOps, ImageDraw
 from imageblock import ImageBlock
-import os
+import os, logging
+
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 class Graphics():
     def __init__(self, width=None, height=None, **kvargs):
@@ -47,7 +50,7 @@ class Graphics():
             self.width = width
             self.height = height
 
-        print(self.width, self.height, self.kvargs)
+        logger.info(f"Width: {self.width}, Height: {self.height}, Args: {self.kvargs}")
 
     def config(self, **kvargs):
         self.kvargs = kvargs

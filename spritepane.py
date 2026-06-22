@@ -6,9 +6,13 @@ try:
     from PIL import Image, ImageTk #, ImageSequence
 except:
     from pil import Image, ImageTk #, ImageSequence
-import os
+import os, sys
 from threading import Thread
 from graphicblock import Graphics
+import configparser, logging
+
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 __autor__='Hernani Aleman Ferraz'
 __version__='v1.2'
