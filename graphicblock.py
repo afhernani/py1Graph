@@ -81,7 +81,7 @@ class Graphics():
         ''' actualizamos la imagen'''
         logger.info('on_update have lunch')
         pass
-
+    
     def fromFile(self, path=None, largs=[]):
         if self.imgBox:
             self.imgBox.fromFile(path=path, largs=largs)
@@ -113,6 +113,10 @@ class Graphics():
     def getSequencies(self):
         if self.imgBox:
             return self.imgBox.getSecuencies()         
+
+    def has_files(self) -> bool:
+        """Return True if there are any loaded images/frames."""
+        return self.imgBox is not None and getattr(self.imgBox, 'count', 0) > 0
                 
     def engine(self, size=None, img=None ) -> Image:
         logger.info('#### Engine ###')

@@ -22,15 +22,15 @@ class SpritePane(tk.Frame):
     def __init__(self, parent, fileImagen=None, timer=None, **kvargs):
         tk.Frame.__init__(self, parent, **kvargs)
         logger.info('SpritePane: init')
-        parent.bind('<G>', self.file_save)
-        parent.bind('<A>', self.define_transform)
-        parent.bind('<R>', self.reset)
+        parent.bind('<Control-s>', self.file_save)
+        parent.bind('<a>', self.define_transform)
+        parent.bind('<r>', self.reset)
         parent.bind('<Key>', self.key)
         self.fileImagen= '' if fileImagen is None else fileImagen
         self.timer = 850 if timer is None else timer
         self.pathfile = tk.StringVar(value=self.fileImagen)
         self.transform = tk.BooleanVar(value=False)
-        self.transform.trace('r', self.trace_transform )
+        self.transform.trace_add('read', self.trace_transform )
         kv = {'path': self.fileImagen, 'transform':False }
         self.m_graphics = Graphics(**kv)
         self.m_img = self.m_graphics.getCurrentImg()
@@ -54,7 +54,7 @@ class SpritePane(tk.Frame):
         self.index = 0
 
     def trace_transform(self, x, y, z):
-        logger.info('trace_info', self.transform.trace_info())
+        logger.info(f'trace_info: {self.transform.trace_info()}')
         logger.info(f'trace_transform function, to read variable boolean: {x}, {y}, {z}')
 
     def define_transform(self, event):
@@ -85,7 +85,7 @@ class SpritePane(tk.Frame):
             # self.m_img.paste(self.m_graphics.getImagenSecuencia(self.index))
             self.m_img  = self.m_graphics.getImagenSecuencia(self.index)
             self.m_photo = ImageTk.PhotoImage(self.m_img)
-            logger.info(f"animate: {self.m_img.mode}, {self.m_photo}\n")
+            logger.info(f"animate -> Mode: {self.m_img.mode}, Photo: {self.m_photo}")
             self.canvas.itemconfig(self.c_img, image=self.m_photo)
             if self.m_graphics.imgBox.count > 0:
                 self.after(self.timer, lambda: self.animate((counter+1)% self.m_graphics.imgBox.count))
@@ -94,6 +94,7 @@ class SpritePane(tk.Frame):
 
     def enter(self, event):
         logger.info('enter: {}'.format(event))
+        #if self.m_graphics.has_files():
         self.animating = True
         self.animate(self.index)
     
@@ -120,21 +121,22 @@ class SpritePane(tk.Frame):
             thread.start()
 
     def image_click(self, event):
-        print('image_click: event', self.__class__.__name__)
-        print('event: ', event)
+        logger.info(f'image_click: event {self.__class__.__name__}')
+        logger.info(f'event: {event}')
         self.file_open()
         
     def file_open(self, *args):
         ftypes = [('Gif files', '*.gif'),('PNG files', '*.png'),('JPG files', '*.jpg'), ('All files', '*')]
         dlg = filedialog.Open(self, filetypes=ftypes, multiple=True)
         fl = dlg.show()
-        print(f'image_click: fls = {fl}')
+        logger.info(f'image_click: fls = {fl}')
         files = list(fl)
-        print(f'image_click: files = {files}')
+        logger.info(f'image_click: files = {files}')
         if fl:
             self.m_graphics.fromFile(largs=files)
 
     def file_save(self, *args):
+        logger.info('file_save: {}'.format(args))
         fileTypes = [('Gif files', '*.gif'),('PNG files', '*.png'),('JPG files', '*.jpg'), ('All files', '*')]
         dirName = os.getcwd()
         fileName = "spritpane-"
@@ -150,25 +152,31 @@ class SpritePane(tk.Frame):
         if asFile:
             # referencia al fichero abierto
             file_n = filedialog.asksaveasfile(mode='wb+', **options)
+            if file_n is None:
+                return
         else:
             # return la cadena de referencia del fichero - aun no creado
             file_n = filedialog.asksaveasfilename(**options)
-        print('file -> ', file_n)
+            if not file_n:
+                return
+        logger.info(f'file -> {file_n}')
         self.m_graphics.savetofile(file_n)
     
     def key(self, event):
         from tkinter import messagebox
-        print('1. pressed:', repr(event.char))
-        print('2. pressed:', event.char )
+        logger.info(f'1. pressed: {repr(event.char)}')
+        # logger.info(f'2. pressed: {event.char}')
         if event.char == 'i':
             #master = tk.Tk()
             #master.title("Information")
             #master.geometry("400x400")
-            texto = '''options: 
-    - Click over picture area to load image
-    - A (shift + a) : rescale the canvas containing the image to the original dimensions of the image.
-    - R (shift + r): reset all imagens, erase all imagens uploads
-    - G (shift + g): save to gif file.'''
+            texto = ("OPTIONS:\n\n"
+                "• Click over picture area to load image.\n\n"
+                "• a : Rescale the canvas to the original dimensions of the image.\n\n"
+                "• r: Reset all images, erase all image uploads.\n\n"
+                "• (Control + s): Save to gif file.\n\n"
+                "• x : Show window adjustment information.\n\n")
+            
             messagebox.showinfo(title="Information", message=texto)
             #msg = tk.Message(master, text=texto)
             #msg.config(bg='lightgreen', font=('times', 12, 'italic'))
