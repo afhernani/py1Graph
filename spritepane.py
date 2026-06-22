@@ -11,7 +11,7 @@ from threading import Thread
 from graphicblock import Graphics
 import configparser, logging
 
-logging.basicConfig(level=logging.INFO)
+logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
 
 __autor__='Hernani Aleman Ferraz'
@@ -21,6 +21,7 @@ class SpritePane(tk.Frame):
     ''' version: v1.2, with canva and image '''
     def __init__(self, parent, fileImagen=None, timer=None, **kvargs):
         tk.Frame.__init__(self, parent, **kvargs)
+        logger.info('SpritePane: init')
         parent.bind('<G>', self.file_save)
         parent.bind('<A>', self.define_transform)
         parent.bind('<R>', self.reset)
@@ -53,8 +54,8 @@ class SpritePane(tk.Frame):
         self.index = 0
 
     def trace_transform(self, x, y, z):
-        print('trace_info', self.transform.trace_info())
-        print('trace_transform function, to read variable boolean:', x, y, z)
+        logger.info('trace_info', self.transform.trace_info())
+        logger.info(f'trace_transform function, to read variable boolean: {x}, {y}, {z}')
 
     def define_transform(self, event):
         '''active mode transfor at dimension that img active'''
@@ -76,7 +77,7 @@ class SpritePane(tk.Frame):
             self.transform.set(False)
 
     def animate(self, counter):
-        print('animate')
+        logger.info('## animate ##')
         if not self.animating:
             return
         try:
@@ -84,33 +85,35 @@ class SpritePane(tk.Frame):
             # self.m_img.paste(self.m_graphics.getImagenSecuencia(self.index))
             self.m_img  = self.m_graphics.getImagenSecuencia(self.index)
             self.m_photo = ImageTk.PhotoImage(self.m_img)
-            print(self.m_img.mode, self.m_photo)
+            logger.info(f"animate: {self.m_img.mode}, {self.m_photo}\n")
             self.canvas.itemconfig(self.c_img, image=self.m_photo)
             if self.m_graphics.imgBox.count > 0:
                 self.after(self.timer, lambda: self.animate((counter+1)% self.m_graphics.imgBox.count))
         except Exception as e:
-            print('animate exception:', str(e.args))
+            logger.error(f'animate exception: {str(e.args)}')
 
     def enter(self, event):
+        logger.info('enter: {}'.format(event))
         self.animating = True
         self.animate(self.index)
     
     def leave(self, event):
+        logger.info('leave: {}'.format(event))
         self.animating = False
 
     def double_click(self, event):
         #import os
-        print('double-click-canvas: file:->{}'.format(self.pathfile.get()))
-        print('basename: -> ', os.path.basename(self.pathfile.get()))
-        print('split: -> ', os.path.split(self.pathfile.get()))
-        print('dirname: -> ', os.path.dirname(self.pathfile.get()))
-        print('directorio activo: -> ', os.getcwd())
+        logger.info('double-click-canvas: file:->{}'.format(self.pathfile.get()))
+        logger.info('basename: -> {}'.format(os.path.basename(self.pathfile.get())))
+        logger.info('split: -> {}'.format(os.path.split(self.pathfile.get())))
+        logger.info('dirname: -> {}'.format(os.path.dirname(self.pathfile.get())))
+        logger.info('directorio activo: -> {}'.format(os.getcwd()))
         address= [os.getcwd(), 'videos', os.path.basename(self.pathfile.get())]
-        print(address)
+        logger.info(f'address: {address}')
         #obtener el nombre del fichero de video
         _video_name = os.path.basename(self.pathfile.get()).split("_thumbs_")[0]
         _video = os.path.join(os.path.dirname(self.pathfile.get()), './../',  _video_name)
-        print('video ->', _video)
+        logger.info(f'video -> {_video}')
         if os.path.isfile(_video):
             thread = Thread(target=self.tarea, args=("ffplay " + "\"" + _video + "\"",))
             thread.daemon = True

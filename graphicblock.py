@@ -196,7 +196,7 @@ class Graphics():
             parameter:
                 source: str name file to save
         '''
-        logger.info('Saving to file...')
+        logger.info('Saving to file a gif ...')
         source = 'unknow.gif' if source is None else source
         imgs = []
         self.transform = False
