@@ -12,6 +12,10 @@ logger = logging.getLogger(__name__)
 class ImageBlock():
 
     def __init__(self, pathfile=None, largs=[]):
+        '''init class ImageBlock
+            parameters:
+                pathfile: path to the image file
+                largs: list of additional arguments'''
         self.eCalls = {}
         self.datos = {'image': Image, 'index': 0, 'count': 0, 'error': None}
         self.imgx = self.CreateImg()
@@ -48,6 +52,8 @@ class ImageBlock():
         function(*args)
 
     def reset(self, *args):
+        ''' reset the index, count and error to default values
+            parameters: *args - list of arguments to pass to function'''
         self.index, self.count, self.error = 0, 0, None
         self.frames.clear()
 
@@ -56,7 +62,7 @@ class ImageBlock():
             parametro:
                 index: de 0 a count-1
                 '''
-        # print('getImagenSecuencia')
+        logger.debug('getImagenSecuencia')
         count = self.count
         if index >= count or index < 0:
            return self.imgx
@@ -186,28 +192,36 @@ class ImageBlock():
             logger.error(f'exception selectframesfromfiles: {e.args} ### {argument}')
 
     def analizeJPG(self, argument):
-        '''no es un fichero animado'''
+        '''analizeJPG function - no es un fichero animado por lo que procede a guardar
+        el pathfile en la lista de frames. argumentos: argument - pathfile'''
         self.frames.append((argument, -1))
         self.imgx = Image.open(argument)
         self.count += 1
         self.index = self.count -1
 
     def analizeWEBP(self, argument):
-        '''por ahora no hace nada, TODO: tendremos en cuenta si es no animacion'''
-        # self.frames.append((argument, -1))
-        # self.imgx = Image.open(argument).copy()
-        # self.count += 1
-        # self.index = self.count -1
+        '''analizeWEBP function - por ahora no hace nada, 
+        hay que tener en cuenta si es no animacion. 
+        Argumentos: argument - pathfile'''
+        self.frames.append((argument, -1))
+        self.imgx = Image.open(argument).copy()
+        self.count += 1
+        self.index = self.count -1
         pass
 
     def analizePNG(self, argument):
-        ''' png no animado '''
+        '''analizePNG function - png no animado. añadios el pathfile 
+        a la lista de frames. argumentos: argument - pathfile
+        Argumentos: argument - pathfile'''
         self.frames.append((argument, -1))
         self.imgx = Image.open(argument)
         self.count += 1
         self.index = self.count -1
 
     def type_file_to_analize(self, argument):
+        '''analize the type of file and call the function to analize it
+            parameters:
+                argument: pathfile to analize'''
         etc = '.' + argument.split('.')[-1]
         etc = etc.upper()
         switcher = {
@@ -222,6 +236,8 @@ class ImageBlock():
         func(argument)
 
     def CreateImg(self)->Image:
+        '''create a image with cross lines
+            return: Image object'''
         im = Image.new('RGBA', (320, 240), (0, 0, 0, 255)) 
         draw = ImageDraw.Draw(im)
         p1 = (0, 0, im.size[0], im.size[1])
