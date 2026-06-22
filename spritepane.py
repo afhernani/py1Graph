@@ -37,7 +37,7 @@ class SpritePane(tk.Frame):
         self.h = self.m_img.height
         self.m_graphics.config(width=self.w, height=self.h, transform=False)
 
-        print("w x h : {} x {}".format(self.w, self.h))
+        logger.info("w x h : {} x {}".format(self.w, self.h))
         self.canvas = tk.Canvas(self, width=self.w, height=self.h, bg="yellow")
         self.canvas.pack()
         self.m_photo = ImageTk.PhotoImage(self.m_img)
@@ -58,7 +58,7 @@ class SpritePane(tk.Frame):
 
     def define_transform(self, event):
         '''active mode transfor at dimension that img active'''
-        print('define_transform:', event)
+        logger.info(f'define_transform: {event}')
         if not self.transform.get():
             self.m_img = self.m_graphics.getCurrentImg()
             self.m_photo = ImageTk.PhotoImage(self.m_img)
@@ -69,7 +69,7 @@ class SpritePane(tk.Frame):
             self.canvas.delete('ALL')
             self.c_img = self.canvas.create_image(self.w/2, self.h/2, image=self.m_photo)
             self.canvas.update()
-            print("w x h : {} x {}".format(self.w, self.h))
+            logger.info("w x h : {} x {}".format(self.w, self.h))
             self.transform.set(True)
         else:
             self.m_graphics.config(transform=False)
