@@ -22,7 +22,7 @@ class Graphics():
                                 'transform':False }
 
         '''
-        # if kvargs:
+        logger.info('Graphics init')
         # self.path = None
         self.width = None
         self.height = None
@@ -44,7 +44,7 @@ class Graphics():
                     self.imgBox.fromFile(largs=valor)
             if key =='transform':
                 self.transform = valor
-            print(f"{key} - {valor}")
+            logger.info(f"{key} - {valor}")
             
         if width and height:
             self.width = width
@@ -73,13 +73,13 @@ class Graphics():
                 self.width = valor
             if key =='height':
                 self.height = valor
-            print(f"{key} - {valor}")
+            logger.info(f"{key} - {valor}")
         '''if self.imgBox:
             self.imgBox.bind('<Update>', self.on_update)'''
 
     def on_update(self):
         ''' actualizamos la imagen'''
-        print('on_update have lunch')
+        logger.info('on_update have lunch')
         pass
 
     def fromFile(self, path=None, largs=[]):
@@ -115,7 +115,7 @@ class Graphics():
             return self.imgBox.getSecuencies()         
                 
     def engine(self, size=None, img=None ) -> Image:
-        print('#### Engine ###')
+        logger.info('#### Engine ###')
         if not size or not img:
             return None
         '''
@@ -124,7 +124,7 @@ class Graphics():
             ventana = Image.new('RGBA', img.size, (0, 0, 0, 255))
             ventana.save('ventana.png')
             ventana.paste(img, mask=ventana.split()[3])
-            print('original mode:', img.mode, 'convert to:', ventana.mode)
+            logger.info(f"original mode: {img.mode}, convert to: {ventana.mode}")
             img = ventana'''
             
         if size == img.size:
@@ -152,7 +152,7 @@ class Graphics():
             parammeter:
                 marco: size imagen fin
                 marco2: size imagen initial '''
-        print('escala -')
+        logger.info('Calculating scale...')
         if not marco or not marco2:
             return 1.0
         w, h = marco
@@ -184,7 +184,7 @@ class Graphics():
         else:
             r = 1.0
             p = (0, 0)
-        print('devuelve:', r, p)
+        logger.info(f"Scale: {r}, Position: {p}")
         return (r, p)
 
     def reset(self, *args):
@@ -196,6 +196,7 @@ class Graphics():
             parameter:
                 source: str name file to save
         '''
+        logger.info('Saving to file...')
         source = 'unknow.gif' if source is None else source
         imgs = []
         self.transform = False
