@@ -1,13 +1,15 @@
 #!/usr/bin/env python3
 # _*_ coding:UTF-8 _*_
-try:
-    from PIL import Image, ImageSequence, ImageDraw
-except:
-    from pil import Image, ImageSequence, ImageDraw
 import os, logging
 
 logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
+
+try:
+    from PIL import Image, ImageSequence, ImageDraw
+except Exception as e:
+    logger.error(f'exception import PIL: {e.args}')
+
 
 class ImageBlock():
 
