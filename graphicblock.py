@@ -73,7 +73,7 @@ class Graphics():
                 self.width = valor
             if key =='height':
                 self.height = valor
-            logger.info(f"{key} - {valor}")
+            logger.info(f"config: {key} - {valor}")
         '''if self.imgBox:
             self.imgBox.bind('<Update>', self.on_update)'''
 
@@ -158,16 +158,16 @@ class Graphics():
         w, h = marco
         w2, h2 = marco2
         x, y = 0, 0
-        print('valores: ',w, h, w2, h2)
+        logger.info(f'valores: w:{w}, h:{h}, w2:{w2}, h2:{h2}')
         f = w/h
         f2 = w2/h2
-        print('relaciones ancho-alto:', f, f2)
+        logger.info(f'relaciones ancho-alto: {f}, {f2}')
         l = math.hypot(w, h)
         l2 = math.hypot(w2, h2)
-        print('hipotemas:', l, l2)
+        logger.info(f'hipotemas: {l}, {l2}')
         a = math.acos((w/l))
         a2 = math.acos((w2/l2))
-        print('angulos:', a, a2)
+        logger.info(f'angulos: {a}, {a2}')
         if a == a2:
             r = w/w2
             p = (0, 0)
