@@ -165,11 +165,8 @@ class SpritePane(tk.Frame):
     def key(self, event):
         from tkinter import messagebox
         logger.info(f'1. pressed: {repr(event.char)}')
-        # logger.info(f'2. pressed: {event.char}')
         if event.char == 'i':
-            #master = tk.Tk()
-            #master.title("Information")
-            #master.geometry("400x400")
+            
             texto = ("OPTIONS:\n\n"
                 "• Click over picture area to load image.\n\n"
                 "• a : Rescale the canvas to the original dimensions of the image.\n\n"
@@ -178,11 +175,7 @@ class SpritePane(tk.Frame):
                 "• x : Show window adjustment information.\n\n")
             
             messagebox.showinfo(title="Information", message=texto)
-            #msg = tk.Message(master, text=texto)
-            #msg.config(bg='lightgreen', font=('times', 12, 'italic'))
-            #msg.pack()
-            #master.mainloop()
-            #tk.mainloop()
+            
         if event.char == 'x':
             messagebox.showinfo(title="Ajuste de ventana", message="pendiente ...")
             

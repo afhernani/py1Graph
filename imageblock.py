@@ -4,7 +4,10 @@ try:
     from PIL import Image, ImageSequence, ImageDraw
 except:
     from pil import Image, ImageSequence, ImageDraw
-import os
+import os, logging
+
+logging.basicConfig(level=logging.DEBUG)
+logger = logging.getLogger(__name__)
 
 class ImageBlock():
 
@@ -71,7 +74,7 @@ class ImageBlock():
                 self.error = 'Not extract file from frames '
         except Exception as e:
             self.error = 'getImagenSecuencia' + e.args
-            print(e.args)
+            logger.error(f'exception getImagenSecuencia: {self.error}')
             
         return self.imgx.copy()
 
@@ -177,7 +180,7 @@ class ImageBlock():
             img.close()
 
         except Exception as e:
-            print('exception selectframesfromfiles: ', e.args, argument)
+            logger.error(f'exception selectframesfromfiles: {e.args} ### {argument}')
 
     def analizeJPG(self, argument):
         '''no es un fichero animado'''
@@ -247,7 +250,7 @@ class ImageBlock():
                             h = itm.size[1]
                     z = w, h
             except AttributeError as e:
-                print(str(e.args))
+                logger.error(str(e.args))
         return z
 
 
