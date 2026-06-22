@@ -25,9 +25,8 @@ class ImageBlock():
                 i = int(self.index/2)
                 self.getImagenSecuencia(i)
         except Exception as e:
-            self.error = e.args
-            print('excepcion init process class', self.__class__.__name__)
-            print('exception:', e.args)
+            self.error = 'excepcion init process class' + str(e.args)
+            logger.error(f'exception init process class: {self.error}')
     
     def bind(self, key, function):
         ''' evento de vinculacion
@@ -151,11 +150,13 @@ class ImageBlock():
             self.selectframesfromfiles(_colect_frames)
         
         except Exception as e:
-            self.error = e
-            print('error fromFile:', e)
+            self.error = 'error fromFile function --> ' + str(e)
+            logger.error(f'fromFile: {self.error}')
 
     def selectframesfromfiles(self, colection=[]):
-        # print('selectframesfromfiles function')
+        '''select frames from files and analize if is animated or not
+            parameters: colection - list of file paths'''
+        logger.info('selectframesfromfiles function')
         for item in colection:
             self.type_file_to_analize(item)
         # TODO: lunch event actualizacin.
@@ -163,8 +164,10 @@ class ImageBlock():
             self.invoke('<Update>') # Actualiza end image loaded
 
     def analizeGIF(self, argument):
-        'analizamos si tiene animation'
-        # print('analizeGif')
+        '''analizamos si el git tiene animation, si es asi, se extraen 
+        todos los frames parametros:
+            argument: pathfile'''
+        logger.info('analizeGif function')
         try:
             img = Image.open(argument)
             nf = img.n_frames
