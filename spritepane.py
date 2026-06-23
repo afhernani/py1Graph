@@ -11,7 +11,15 @@ from threading import Thread
 from graphicblock import Graphics
 import configparser, logging
 
-logging.basicConfig(level=logging.DEBUG)
+# 1. Configurar el logging SOLO en el archivo principal
+logging.basicConfig(
+    filename='buger.log',
+    filemode='w',  # 'a' para añadir, 'w' para sobrescribir cada vez que se ejecuta
+    level=logging.DEBUG,
+    # ¡IMPORTANTE! Usamos %(name)s para ver de qué archivo viene el log
+    format='%(asctime)s | %(name)s | %(levelname)s | %(message)s',
+    datefmt='%Y-%m-%d %H:%M:%S'
+)
 logger = logging.getLogger(__name__)
 
 __autor__='Hernani Aleman Ferraz'
