@@ -42,8 +42,11 @@ class SpritePane(tk.Frame):
     def __init__(self, parent, fileImagen=None, timer=None, **kvargs):
         tk.Frame.__init__(self, parent, **kvargs)
         logger.info(f'SpritePane: __init__ with fileImagen={fileImagen}, timer={timer}')
-        logger.info('SpritePane: init')
+        parent.bind('<Configure>', self.on_resize)
+        parent.bind('<Control-q>', lambda e: parent.quit())
+        parent.bind('<Control-o>', self.file_open)
         parent.bind('<Control-s>', self.file_save)
+        parent.bind('<d>', self.right_click)
         parent.bind('<a>', self.define_transform)
         parent.bind('<r>', self.reset)
         parent.bind('<Key>', self.on_key)
@@ -77,11 +80,20 @@ class SpritePane(tk.Frame):
 
         self.canvas.bind('<Enter>', self.enter)
         self.canvas.bind('<Leave>', self.leave)
-        self.canvas.bind('<Double-Button-1>', self.double_click)
+        self.canvas.bind('<Button-3>', self.right_click)
         self.canvas.bind('<Button-1>', self.image_click)
         self.animating = True
         # self.animate(0)
         self.index = 0
+
+    def on_resize(self, event):
+        logger.info(f'on_resize: event {event}')
+        self.canvas_width = event.width
+        self.canvas_height = event.height
+        self.m_graphics.config(width=self.canvas_width, height=self.canvas_height)
+        self.canvas.config(width=self.canvas_width, height=self.canvas_height)
+        self.canvas.coords(self.c_img, self.canvas_width/2, self.canvas_height/2)
+        logger.info("on_resize: w x h : {} x {}".format(self.canvas_width, self.canvas_height))
 
     def trace_transform(self, x, y, z):
         logger.info(f'trace_info: {self.transform.trace_info()}')
@@ -131,9 +143,9 @@ class SpritePane(tk.Frame):
         logger.info('leave: {}'.format(event))
         self.animating = False
 
-    def double_click(self, event):
+    def right_click(self, event):
         #import os
-        logger.info('double-click-canvas: file:->{}'.format(self.pathfile.get()))
+        logger.info('right-click-canvas: file:->{}'.format(self.pathfile.get()))
         logger.info('basename: -> {}'.format(os.path.basename(self.pathfile.get())))
         logger.info('split: -> {}'.format(os.path.split(self.pathfile.get())))
         logger.info('dirname: -> {}'.format(os.path.dirname(self.pathfile.get())))
@@ -203,9 +215,11 @@ class SpritePane(tk.Frame):
             
             texto = ("OPTIONS:\n\n"
                 "• Click over picture area to load image.\n\n"
-                "• a : Rescale the canvas to the original dimensions of the image.\n\n"
+                "• a : ajustar imagen al tamaño de la ventana.\n\n"
                 "• r: Reset all images, erase all image uploads.\n\n"
                 "• (Control + s): Save to gif file.\n\n"
+                "• (Control + o): Open image file(s).\n\n"
+                "• (Control + q): Quit application.\n\n"
                 "• x : Show window adjustment information.\n\n")
             
             messagebox.showinfo(title="Information", message=texto)
@@ -224,7 +238,7 @@ class SpritePane(tk.Frame):
             # Actualizamos el objeto config en memoria (usando self)
             #if self.pathfile.get():
             #    config.set('APP', 'default_dir', str(self.pathfile.get()))
-            config.set('CANVAS', 'width', str(self.canvas_width))
+            config.set('CANVAS', 'width', str(self.canvas_width-10))
             config.set('CANVAS', 'height', str(self.canvas_height))
             
             # Guardamos en disco
@@ -260,7 +274,8 @@ def main():
     root.geometry(f"{w+10}x{h+10}")
     #root.geometry("400x600")
     app = SpritePane(root) #, fileImagen='./../work/thumbails/cotton.gif', timer=200)
-    app.pack()
+    app.pack(fill=tk.BOTH, expand=True)
+    root.update_idletasks()
     root.protocol("WM_DELETE_WINDOW", app.on_closing)
     # app2 = SpritePane(root, fileImagen='Image/moving_text.gif')
     # app2.pack()
