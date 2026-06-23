@@ -10,7 +10,7 @@ import os, sys
 from threading import Thread
 from graphicblock import Graphics
 import configparser, logging
-from settings import config, root  # 👈 Importamos config y root
+from settings import config, root, save_config  # 👈 Importamos config y root
 
 # Configuramos el logging usando el config.ini
 log_level = config.get('APP', 'log_level', fallback='DEBUG')
@@ -29,15 +29,14 @@ logging.basicConfig(
     ],
     )
 
+
 logger = logging.getLogger(__name__)
 logger.info(f'Logging initialized in {root / "debug.log"}')
 
 __autor__='Hernani Aleman Ferraz'
 __version__='v1.3'
 
-config = configparser.ConfigParser()
-#config.read(root / "config.ini")
-
+save_config()
 
 class SpritePane(tk.Frame):
     ''' version: v1.3, with canva and image '''

@@ -4,13 +4,30 @@ from pathlib import Path
 
 # 1. Definimos la ruta raíz (igual que en tu spritepane.py)
 root = Path(__file__).parent
-
-# 2. Instanciamos y leemos el archivo
+# 2. Definimos la ruta del archivo de configuración
+config_file = root / "config.ini"
+# 3. Instanciamos y leemos el archivo
 config = configparser.ConfigParser()
-# Usamos root para asegurar que siempre encuentre el archivo, 
-# sin importar desde dónde se ejecute el script.
-config.read(root / "config.ini", encoding="utf-8")
 
-# 3. (Opcional) Validación básica: si no existe el archivo, avisamos
-if not config.read(root / "config.ini"):
-    print("Advertencia: No se encontró config.ini, usando valores por defecto.")
+# Leemos el archivo (si no existe, no pasa nada, no da error)
+config.read(config_file, encoding="utf-8")
+
+# Si no hay secciones (archivo no existe O archivo está vacío)
+if not config.sections():
+    print("config.ini no encontrado o vacío. Generando valores por defecto...")
+    
+    config['APP'] = {
+        'debug': 'true',
+        'log_level': 'DEBUG',
+        'width': '400',
+        'height': '300'
+    }
+    
+    with open(config_file, 'w', encoding='utf-8') as f:
+        config.write(f)
+
+
+def save_config():
+    """Función para guardar cambios en el config.ini"""
+    with open(config_file, 'w', encoding='utf-8') as f:
+        config.write(f)
