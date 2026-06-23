@@ -19,7 +19,11 @@ if not config.sections():
     config['APP'] = {
         'debug': 'true',
         'log_level': 'DEBUG',
-        'working_dir': str(root),
+        'default_dir': str(root) 
+    }
+    config['CANVAS'] = {
+        'grid_size': '10',
+        'bg_color': 'yellow',
         'width': '400',
         'height': '300'
     }

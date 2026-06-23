@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # _*_ coding:UTF-8 _*_
 import tkinter as tk
-from tkinter import filedialog
+from tkinter import filedialog, messagebox
 try:
     from PIL import Image, ImageTk #, ImageSequence
 except Exception as e:
@@ -36,18 +36,26 @@ logger.info(f'Logging initialized in {root / "debug.log"}')
 __autor__='Hernani Aleman Ferraz'
 __version__='v1.3'
 
-save_config()
 
 class SpritePane(tk.Frame):
     ''' version: v1.3, with canva and image '''
     def __init__(self, parent, fileImagen=None, timer=None, **kvargs):
         tk.Frame.__init__(self, parent, **kvargs)
+        logger.info(f'SpritePane: __init__ with fileImagen={fileImagen}, timer={timer}')
         logger.info('SpritePane: init')
         parent.bind('<Control-s>', self.file_save)
         parent.bind('<a>', self.define_transform)
         parent.bind('<r>', self.reset)
-        parent.bind('<Key>', self.key)
+        parent.bind('<Key>', self.on_key)
+        # leer configuracion de canvas
+        self.canvas_width = kvargs.get('width', config.getint('CANVAS', 'width', fallback=400))
+        self.canvas_height = kvargs.get('height', config.getint('CANVAS', 'height', fallback=300))
+        self.canvas_bg = config.get('CANVAS', 'bg_color', fallback='yellow')
+        # 2. Leer directorio por defecto
+        self.default_dir = config.get('APP', 'default_dir', fallback=os.getcwd())
+
         self.fileImagen= '' if fileImagen is None else fileImagen
+        self.fileImagen = self.default_dir
         self.timer = 850 if timer is None else timer
         self.pathfile = tk.StringVar(value=self.fileImagen)
         self.transform = tk.BooleanVar(value=False)
@@ -55,16 +63,17 @@ class SpritePane(tk.Frame):
         kv = {'path': self.fileImagen, 'transform':False }
         self.m_graphics = Graphics(**kv)
         self.m_img = self.m_graphics.getCurrentImg()
-        self.w = self.m_img.width
-        self.h = self.m_img.height
-        self.m_graphics.config(width=self.w, height=self.h, transform=False)
+        #self.w = self.m_img.width
+        #self.h = self.m_img.height
 
-        logger.info("w x h : {} x {}".format(self.w, self.h))
-        self.canvas = tk.Canvas(self, width=self.w, height=self.h, bg="yellow")
+        self.m_graphics.config(width=self.canvas_width, height=self.canvas_height, transform=False)
+
+        logger.info("w x h : {} x {}".format(self.canvas_width, self.canvas_height))
+        self.canvas = tk.Canvas(self, width=self.canvas_width, height=self.canvas_height, bg=self.canvas_bg)
         self.canvas.pack()
         self.m_photo = ImageTk.PhotoImage(self.m_img)
 
-        self.c_img = self.canvas.create_image(self.w/2, self.h/2, image=self.m_photo)
+        self.c_img = self.canvas.create_image(self.canvas_width/2, self.canvas_height/2, image=self.m_photo)
 
         self.canvas.bind('<Enter>', self.enter)
         self.canvas.bind('<Leave>', self.leave)
@@ -84,14 +93,13 @@ class SpritePane(tk.Frame):
         if not self.transform.get():
             self.m_img = self.m_graphics.getCurrentImg()
             self.m_photo = ImageTk.PhotoImage(self.m_img)
-            self.w = self.m_img.width
-            self.h = self.m_img.height
-            self.m_graphics.config(width=self.w, height=self.h, transform=True)
-            self.canvas.config(width=self.w, height=self.h)
+            #self.w, self.h = self.m_img.width, self.m_img.height
+            self.m_graphics.config(width=self.canvas_width, height=self.canvas_height, transform=True)
+            #self.canvas.config(width=self.w, height=self.h)
             self.canvas.delete('ALL')
-            self.c_img = self.canvas.create_image(self.w/2, self.h/2, image=self.m_photo)
+            self.c_img = self.canvas.create_image(self.canvas_width/2, self.canvas_height/2, image=self.m_photo)
             self.canvas.update()
-            logger.info("w x h : {} x {}".format(self.w, self.h))
+            # logger.info("w x h : {} x {}".format(self.w, self.h))
             self.transform.set(True)
         else:
             self.m_graphics.config(transform=False)
@@ -150,11 +158,16 @@ class SpritePane(tk.Frame):
         ftypes = [('Gif files', '*.gif'),('PNG files', '*.png'),('JPG files', '*.jpg'), ('All files', '*')]
         dlg = filedialog.Open(self, filetypes=ftypes, multiple=True)
         fl = dlg.show()
-        logger.info(f'image_click: fls = {fl}')
+        # logger.info(f'image_click: fls = {fl}')
         files = list(fl)
         logger.info(f'image_click: files = {files}')
         if fl:
             self.m_graphics.fromFile(largs=files)
+            new_path = os.path.dirname(files[0])  # Tomamos el directorio del primer archivo seleccionado
+            logger.info(f'file_open: new_path = {new_path}')
+            config.set('APP', 'default_dir', new_path)  # Actualizamos el config
+            self.pathfile.set(new_path)  # Actualizamos el pathfile con el primer archivo seleccionado
+            self.file_open = new_path
 
     def file_save(self, *args):
         logger.info('file_save: {}'.format(args))
@@ -183,7 +196,7 @@ class SpritePane(tk.Frame):
         logger.info(f'file -> {file_n}')
         self.m_graphics.savetofile(file_n)
     
-    def key(self, event):
+    def on_key(self, event):
         from tkinter import messagebox
         logger.info(f'1. pressed: {repr(event.char)}')
         if event.char == 'i':
@@ -199,7 +212,32 @@ class SpritePane(tk.Frame):
             
         if event.char == 'x':
             messagebox.showinfo(title="Ajuste de ventana", message="pendiente ...")
+
+
+    def on_closing(self):
+        """Maneja el cierre de la aplicación y guarda la configuración."""
+        from tkinter import messagebox
+        
+        # 1. Preguntar al usuario
+        if messagebox.askyesnocancel("Salir", "¿Desea guardar la configuración actual antes de salir?"):
             
+            # Actualizamos el objeto config en memoria (usando self)
+            if self.pathfile.get():
+                config.set('APP', 'default_dir', os.path.dirname(self.pathfile.get()))
+            config.set('CANVAS', 'width', str(self.canvas_width))
+            config.set('CANVAS', 'height', str(self.canvas_height))
+            
+            # Guardamos en disco
+            save_config()
+            logger.info("Configuración guardada al salir.")
+            
+            # Cerramos la ventana (self.master es la ventana root)
+            self.master.destroy()
+            
+        elif messagebox.askyesno("Salir", "¿Está seguro que desea salir sin guardar?"):
+            self.master.destroy()
+        # Si pulsa Cancelar, no hace nada.
+
 
     @staticmethod
     def tarea(args=None):
@@ -212,12 +250,18 @@ class SpritePane(tk.Frame):
             self.m_graphics.reset()
         self.index = 0
 
+
 def main():
     root = tk.Tk()
     root.title("py1graph; push 'i' for information.")
-    root.geometry("400x600")
+    # Leemos el tamaño desde el config para la ventana principal también
+    w = config.getint('CANVAS', 'width', fallback=400)
+    h = config.getint('CANVAS', 'height', fallback=600)
+    root.geometry(f"{w+10}x{h+10}")
+    #root.geometry("400x600")
     app = SpritePane(root) #, fileImagen='./../work/thumbails/cotton.gif', timer=200)
     app.pack()
+    root.protocol("WM_DELETE_WINDOW", app.on_closing)
     # app2 = SpritePane(root, fileImagen='Image/moving_text.gif')
     # app2.pack()
     # app3 = SpritePane(root, fileImagen='_Work/Thumbails/butt.gif')
