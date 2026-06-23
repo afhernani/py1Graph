@@ -222,8 +222,8 @@ class SpritePane(tk.Frame):
         if messagebox.askyesnocancel("Salir", "¿Desea guardar la configuración actual antes de salir?"):
             
             # Actualizamos el objeto config en memoria (usando self)
-            if self.pathfile.get():
-                config.set('APP', 'default_dir', os.path.dirname(self.pathfile.get()))
+            #if self.pathfile.get():
+            #    config.set('APP', 'default_dir', str(self.pathfile.get()))
             config.set('CANVAS', 'width', str(self.canvas_width))
             config.set('CANVAS', 'height', str(self.canvas_height))
             
