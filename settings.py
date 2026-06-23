@@ -19,6 +19,7 @@ if not config.sections():
     config['APP'] = {
         'debug': 'true',
         'log_level': 'DEBUG',
+        'working_dir': str(root),
         'width': '400',
         'height': '300'
     }
