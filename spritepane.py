@@ -4,13 +4,15 @@ import tkinter as tk
 from tkinter import filedialog
 try:
     from PIL import Image, ImageTk #, ImageSequence
-except:
-    from pil import Image, ImageTk #, ImageSequence
+except Exception as e:
+    print(f'Error importing PIL: {e}')
 import os, sys
 from threading import Thread
 from graphicblock import Graphics
 import configparser, logging
+from pathlib import Path
 
+root = Path(__file__).parent 
 # 1. Configurar el logging SOLO en el archivo principal
 logging.basicConfig(
     filename='buger.log',
@@ -18,15 +20,19 @@ logging.basicConfig(
     level=logging.DEBUG,
     # ¡IMPORTANTE! Usamos %(name)s para ver de qué archivo viene el log
     format='%(asctime)s | %(name)s | %(levelname)s | %(message)s',
-    datefmt='%Y-%m-%d %H:%M:%S'
+    datefmt='%Y-%m-%d %H:%M:%S',
+    handlers=[
+        logging.FileHandler(root / "debug.log", encoding="utf-8", delay=True),
+        logging.StreamHandler(),
+    ],
 )
 logger = logging.getLogger(__name__)
 
 __autor__='Hernani Aleman Ferraz'
-__version__='v1.2'
+__version__='v1.3'
 
 class SpritePane(tk.Frame):
-    ''' version: v1.2, with canva and image '''
+    ''' version: v1.3, with canva and image '''
     def __init__(self, parent, fileImagen=None, timer=None, **kvargs):
         tk.Frame.__init__(self, parent, **kvargs)
         logger.info('SpritePane: init')
