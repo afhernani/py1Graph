@@ -5,7 +5,7 @@ try:
     from PIL import Image, ImageSequence, ImageDraw
 except Exception as e:
     print(f'exception import PIL: {e.args}')
-
+from settings import config
 
 # logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)

@@ -7,6 +7,7 @@ except Exception as e:
     print(f'exception import PIL: {e.args}')
 from imageblock import ImageBlock
 import os, logging
+from settings import config
 
 # logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)

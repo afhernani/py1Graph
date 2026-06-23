@@ -10,27 +10,34 @@ import os, sys
 from threading import Thread
 from graphicblock import Graphics
 import configparser, logging
-from pathlib import Path
+from settings import config, root  # 👈 Importamos config y root
 
-root = Path(__file__).parent 
-# 1. Configurar el logging SOLO en el archivo principal
+# Configuramos el logging usando el config.ini
+log_level = config.get('APP', 'log_level', fallback='DEBUG')
+
 logging.basicConfig(
-    #filename='buger.log',
-    #filemode='a',  # 'a' para añadir, 'w' para sobrescribir cada vez que se ejecuta
-    level=logging.DEBUG,
+    #filename=root / "debug.log",
+    #filemode='w',  # 'a' para añadir, 'w' para sobrescribir cada vez que se ejecuta
+    level=getattr(logging, log_level),
     # ¡IMPORTANTE! Usamos %(name)s para ver de qué archivo viene el log
     format='%(asctime)s | %(name)s | %(levelname)s | %(message)s',
-    datefmt='%Y-%m-%d %H:%M:%S',
+    #datefmt='%Y-%m-%d %H:%M:%S',
     handlers=[
         logging.FileHandler(root / "debug.log", encoding="utf-8", mode='w', delay=True),
+        # comentar la linea inferior si no quieres que se muestre en consola
         logging.StreamHandler(),
-    ],)
+    ],
+    )
 
 logger = logging.getLogger(__name__)
 logger.info(f'Logging initialized in {root / "debug.log"}')
 
 __autor__='Hernani Aleman Ferraz'
 __version__='v1.3'
+
+config = configparser.ConfigParser()
+#config.read(root / "config.ini")
+
 
 class SpritePane(tk.Frame):
     ''' version: v1.3, with canva and image '''
