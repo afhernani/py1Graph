@@ -15,18 +15,19 @@ from pathlib import Path
 root = Path(__file__).parent 
 # 1. Configurar el logging SOLO en el archivo principal
 logging.basicConfig(
-    filename='buger.log',
-    filemode='w',  # 'a' para añadir, 'w' para sobrescribir cada vez que se ejecuta
+    #filename='buger.log',
+    #filemode='a',  # 'a' para añadir, 'w' para sobrescribir cada vez que se ejecuta
     level=logging.DEBUG,
     # ¡IMPORTANTE! Usamos %(name)s para ver de qué archivo viene el log
     format='%(asctime)s | %(name)s | %(levelname)s | %(message)s',
     datefmt='%Y-%m-%d %H:%M:%S',
     handlers=[
-        logging.FileHandler(root / "debug.log", encoding="utf-8", delay=True),
+        logging.FileHandler(root / "debug.log", encoding="utf-8", mode='w', delay=True),
         logging.StreamHandler(),
-    ],
-)
+    ],)
+
 logger = logging.getLogger(__name__)
+logger.info(f'Logging initialized in {root / "debug.log"}')
 
 __autor__='Hernani Aleman Ferraz'
 __version__='v1.3'

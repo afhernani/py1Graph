@@ -3,12 +3,12 @@
 import math
 try:
     from PIL import Image, ImageOps, ImageDraw
-except:
-    from pil import Image, ImageOps, ImageDraw
+except Exception as e:
+    print(f'exception import PIL: {e.args}')
 from imageblock import ImageBlock
 import os, logging
 
-logging.basicConfig(level=logging.DEBUG)
+# logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
 
 class Graphics():
